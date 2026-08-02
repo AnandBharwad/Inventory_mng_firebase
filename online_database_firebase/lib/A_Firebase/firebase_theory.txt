@@ -1,0 +1,44 @@
+A firebase is a plateform which is provide all services,        
+        related to database , deployement ,storage , document and all at one place.
+
+it is easy to understand and learn.
+
+it is easy to configure.
+
+----------------------------
+
+step 1 : open account in firebase
+
+step 2 : Create Project
+
+step 3 : ciick on Add app
+
+step 4 : Choose flutter
+
+step 5 : Install FlutterFire CLI
+
+step 6 : before start this make sure Node.js 18+ version related,       
+        Install Node.js from official site.
+
+        npm : Node package manager
+
+        open powershell in admin mode
+
+        # npm install -g firebase-tools
+
+        for the security purpose 
+
+        # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+        # dart pub global activate flutterfire_cli
+
+        #firebase login 
+step 7 :  after completing above may be you see a error
+       
+                > add these two dependencies
+                flutter pub add firebase_core
+                flutter pub add firebase_auth
+
+                > also we required create a nosql datatabse type document.
+                flutter pub add cloud_firestore
+
