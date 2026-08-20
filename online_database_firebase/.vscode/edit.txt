@@ -1,0 +1,171 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:online_database_firebase/A_Firebase/model/product_model.dart';
+
+class FbEditScreen extends StatefulWidget {
+  final ProductModel prodModel;
+  const FbEditScreen({super.key, required this.prodModel});
+
+  @override
+  State<FbEditScreen> createState() => _FbEditScreenState();
+}
+
+class _FbEditScreenState extends State<FbEditScreen> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _quantityController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    _nameController.text = widget.prodModel.productName.toString();
+    _priceController.text = widget.prodModel.productPrice.toString();
+    _quantityController.text = widget.prodModel.productQty.toString();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    _quantityController.dispose();
+    super.dispose();
+  }
+
+  Future<void> updateFireStore(ProductModel productModelUpdate) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection("Product")
+        .doc(widget.prodModel.id)
+        .update(productModelUpdate.toMap());
+
+    print("Update successful");
+  } catch (e) {
+    print("Update failed: $e");
+  }
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Edit Product Details"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 6.0,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Edit Product Name"),
+                SizedBox(
+                  width: 9,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                        hintText: "Edit Product Name",
+                        border: OutlineInputBorder()),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text("Edit Product Price "),
+                SizedBox(
+                  width: 9,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _priceController,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text("Edit Product Qty    "),
+                SizedBox(
+                  width: 9,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _quantityController,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 27,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 50,
+                    width: double.maxFinite,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: ContinuousRectangleBorder(
+                              side: BorderSide(color: Colors.red),
+                              borderRadius: BorderRadiusGeometry.circular(20),
+                            ),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.red),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel")),
+                  ),
+                ),
+                SizedBox(
+                  width: 9,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 50,
+                    width: double.maxFinite,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: ContinuousRectangleBorder(
+                                borderRadius:
+                                    BorderRadiusGeometry.circular(20)),
+                            backgroundColor: Colors.green.withOpacity(0.7),
+                            foregroundColor: Colors.white),
+                        onPressed: () async {
+                          ProductModel productModelUpdate = ProductModel(
+                              productName: _nameController.text.toString(),
+                              productQty: int.parse(
+                                  _quantityController.text.toString()),
+                              productPrice: double.parse(
+                                  _priceController.text.toString())
+                                  ,
+                                  categoryName: 
+                                  );
+
+                          if (!mounted) return;
+                          await updateFireStore(productModelUpdate);
+
+                          if (!mounted) return;
+                          Navigator.pop(context);
+                        },
+                        child: Text("Update")),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

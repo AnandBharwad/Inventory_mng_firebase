@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:online_database_firebase/A_Firebase/screen/fb_addProduct.dart';
+import 'package:online_database_firebase/A_Firebase/routes/nav_routes.dart';
 import 'package:online_database_firebase/A_Firebase/auth/fb_login.dart';
-import 'package:online_database_firebase/A_Firebase/screen/fb_productViewScreen.dart';
-import 'package:online_database_firebase/A_Firebase/screen/fb_user_profile.dart';
 
 class FbHomescreen extends StatefulWidget {
   const FbHomescreen({super.key});
@@ -43,7 +41,7 @@ class _FbHomescreenState extends State<FbHomescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey.withOpacity(0.2),
       appBar: AppBar(
         title: const Text(
           "Manager Dashboard",
@@ -53,11 +51,13 @@ class _FbHomescreenState extends State<FbHomescreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FbUserProfile(),
-                  ));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (_) => FbUserProfile(),
+              //     ));
+
+              Navigator.pushNamed(context, NavRoutes.profile);
             },
             icon: Icon(Icons.person),
           )
@@ -72,17 +72,45 @@ class _FbHomescreenState extends State<FbHomescreen> {
           mainAxisSpacing: 16,
           childAspectRatio: 1.1,
           children: [
+            InkWell(
+              onTap: () => Navigator.pushNamed(context, NavRoutes.editCategory),
+              // borderRadius: BorderRadius.circular(16)
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.redAccent.withOpacity(0.3),
+                      child: Icon(
+                        Icons.category,
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      "Check & Delete Cateogries",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
             // Add Product Card
             InkWell(
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => FbAddproduct()));
-              },
+              onTap: () => Navigator.pushNamed(context, NavRoutes.addProduct),
               borderRadius: BorderRadius.circular(16),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -116,10 +144,9 @@ class _FbHomescreenState extends State<FbHomescreen> {
             // View Product Card
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => FbProductviewscreen()));
+                Navigator.pushNamed(context, NavRoutes.viewProducts);
               },
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(9),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -153,6 +180,81 @@ class _FbHomescreenState extends State<FbHomescreen> {
                 ),
               ),
             ),
+
+            InkWell(
+              onTap: () => Navigator.pushNamed(context, NavRoutes.addCategory),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 14,
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: const Color.fromARGB(255, 6, 243, 14)
+                          .withOpacity(0.3),
+                      child: Icon(Icons.add),
+                    ),
+                    Text("Add Category",
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                  ],
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: () => Navigator.pushNamed(context, NavRoutes.addSupplier),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 12,
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.amber.withOpacity(0.2),
+                      child: Icon(
+                        Icons.person_add,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    Text("Add Supplier",
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                  ],
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: () => Navigator.pushNamed(context, NavRoutes.viewStocks),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.blue.withOpacity(0.6),
+                      child: Icon(
+                        Icons.production_quantity_limits,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Text("Stock Screen")
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

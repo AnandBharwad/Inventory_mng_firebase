@@ -14,6 +14,7 @@ class _FbLoginState extends State<FbLogin> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
+  var _formCheck = GlobalKey<FormState>();
   bool _tooSee = true;
 
   Future<bool> checkLoginData(String email, String password) async {
@@ -26,7 +27,7 @@ class _FbLoginState extends State<FbLogin> {
       print("------------------->>>>>> UID ${uid}");
       DocumentSnapshot doc =
           await FirebaseFirestore.instance.collection("Manager").doc(uid).get();
-          
+
       print("Hello ${doc["username"]}");
       return true;
     } catch (e) {
@@ -62,104 +63,144 @@ class _FbLoginState extends State<FbLogin> {
                 borderRadius: BorderRadius.circular(20)),
             child: Center(
               child: Form(
+                  key: _formCheck,
                   child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  spacing: 9,
-                  children: [
-                    SizedBox(
-                      height: 40,
-                    ),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                          hintText: "Enter your email",
-                          labelText: "E-mail",
-                          labelStyle: TextStyle(color: Colors.black),
-                          icon: Icon(
-                            Icons.mail,
-                            color: Colors.black,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _tooSee,
-                      decoration: InputDecoration(
-                        hintText: "Enter your password",
-                        labelText: "Password",
-                        labelStyle: TextStyle(color: Colors.black),
-                        icon: Icon(
-                          Icons.password,
-                          color: Colors.black,
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      spacing: 9,
+                      children: [
+                        SizedBox(
+                          height: 40,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _tooSee = !_tooSee;
-                            });
-                          },
-                          icon: _tooSee
-                              ? Icon(Icons.remove_red_eye)
-                              : Icon(Icons.close),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 40,
-                        width: double.maxFinite,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.white,
-                              elevation: 6,
-                              shape: ContinuousRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(18),
-                              ),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            hintText: "Enter your email",
+                            labelText: "E-mail",
+                            labelStyle: TextStyle(color: Colors.black),
+                            icon: Icon(
+                              Icons.mail,
+                              color: Colors.black,
                             ),
-                            onPressed: () async {
-                              bool isLogin = await checkLoginData(
-                                  _emailController.text.toString(),
-                                  _passwordController.text.toString());
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty || value == null) {
+                              return "Please Enter Your Email";
+                            }
+                          },
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _tooSee,
+                          decoration: InputDecoration(
+                            hintText: "Enter your password",
+                            labelText: "Password",
+                            labelStyle: TextStyle(color: Colors.black),
+                            icon: Icon(
+                              Icons.password,
+                              color: Colors.black,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _tooSee = !_tooSee;
+                                });
+                              },
+                              icon: _tooSee
+                                  ? Icon(Icons.remove_red_eye)
+                                  : Icon(Icons.close),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty || value == null) {
+                              return "Please Enter Your Email";
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: 40,
+                            width: double.maxFinite,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor: Colors.white,
+                                  elevation: 6,
+                                  shape: ContinuousRectangleBorder(
+                                    borderRadius:
+                                        BorderRadiusGeometry.circular(18),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (_formCheck.currentState!.validate()) {
+                                    bool isLogin = await checkLoginData(
+                                        _emailController.text.toString(),
+                                        _passwordController.text.toString());
 
-                              if (isLogin) {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => FbHomescreen()));
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                    .showMaterialBanner(MaterialBanner(
+                                    if (isLogin) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("Login Successfull"),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                      if (!mounted) return;
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => FbHomescreen()));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
                                         content: Text(
                                             "Login Faild,Please cheack your credentials"),
-                                        actions: [
-                                      ElevatedButton(
-                                          onPressed: () {}, child: Text("OK"))
-                                    ]));
-                              }
-                            },
-                            child: Text("Save Info")),
-                      ),
-                    )
-                  ],
-                ),
-              )),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Please Fill up The form")));
+                                  }
+                                },
+                                child: Text("Save Info")),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
             )),
       ),
     );

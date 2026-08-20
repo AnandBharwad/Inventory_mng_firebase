@@ -17,6 +17,7 @@ class _FbFormState extends State<FbForm> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _contactNoController = TextEditingController();
 
+  GlobalKey<FormState> _fomrCheck = GlobalKey<FormState>();
   bool _toSee = true;
 
   @override
@@ -56,6 +57,17 @@ class _FbFormState extends State<FbForm> {
     }
   }
 
+  InputDecoration textFieldinput(
+      {required String myLabel,
+      required String myhint,
+      required IconData myicon}) {
+    return InputDecoration(
+      hintText: myhint,
+      labelText: myLabel,
+      icon: Icon(myicon, color: Colors.black),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,129 +87,192 @@ class _FbFormState extends State<FbForm> {
                 borderRadius: BorderRadius.circular(20)),
             child: Center(
               child: Form(
+                  key: _fomrCheck,
                   child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  spacing: 9,
-                  children: [
-                    SizedBox(
-                      height: 40,
-                    ),
-                    TextFormField(
-                      controller: _userNameController,
-                      decoration: InputDecoration(
-                          hintText: "Enter your Name",
-                          labelText: "Name",
-                          icon: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    TextFormField(
-                      controller: _contactNoController,
-                      decoration: InputDecoration(
-                          hintText: "Enter your contact number",
-                          labelText: "Contact No",
-                          icon: Icon(
-                            Icons.phone,
-                            color: Colors.black,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                          hintText: "Enter your email",
-                          labelText: "E-mail",
-                          icon: Icon(
-                            Icons.mail,
-                            color: Colors.black,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _toSee,
-                      decoration: InputDecoration(
-                        hintText: "Enter your password",
-                        labelText: "Password",
-                        icon: Icon(
-                          Icons.password,
-                          color: Colors.black,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _toSee = !_toSee;
-                            });
-                          },
-                          icon: _toSee
-                              ? Icon(Icons.remove_red_eye)
-                              : Icon(Icons.close),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 40,
-                        width: double.maxFinite,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.white,
-                              elevation: 6,
-                              shape: ContinuousRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(18),
-                              ),
+                    padding: const EdgeInsets.all(9.0),
+                    child: Column(
+                      spacing: 9,
+                      children: [
+                        TextFormField(
+                          controller: _userNameController,
+                          decoration: InputDecoration(
+                            hintText: "Enter your Name",
+                            labelText: "Name",
+                            icon: Icon(
+                              Icons.person,
+                              color: Colors.black,
                             ),
-                            onPressed: () {
-                              register(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                  _userNameController.text,
-                                  _contactNoController.text);
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter Your Name ";
+                            }
+                          },
+                        ),
+                        TextFormField(
+                          controller: _contactNoController,
+                          decoration: InputDecoration(
+                            hintText: "Enter your contact number",
+                            labelText: "Contact No",
+                            icon: Icon(
+                              Icons.phone,
+                              color: Colors.black,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter Your Contqct Number ";
+                            }
+                          },
+                        ),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            hintText: "Enter your email",
+                            labelText: "E-mail",
+                            icon: Icon(
+                              Icons.mail,
+                              color: Colors.black,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter Your E-mail ";
+                            }
+                          },
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _toSee,
+                          decoration: InputDecoration(
+                            hintText: "Enter your password",
+                            labelText: "Password",
+                            icon: Icon(
+                              Icons.password,
+                              color: Colors.black,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.redAccent, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _toSee = !_toSee;
+                                });
+                              },
+                              icon: _toSee
+                                  ? Icon(Icons.remove_red_eye)
+                                  : Icon(Icons.close),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Please Enter the Password";
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: 40,
+                            width: double.maxFinite,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor: Colors.white,
+                                  elevation: 6,
+                                  shape: ContinuousRectangleBorder(
+                                    borderRadius:
+                                        BorderRadiusGeometry.circular(18),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (_fomrCheck.currentState!.validate()) {
+                                    register(
+                                        _emailController.text,
+                                        _passwordController.text,
+                                        _userNameController.text,
+                                        _contactNoController.text);
 
-                              Navigator.pushReplacement(context,
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => FbLogin()));
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Please Fill Up Form First")));
+                                  }
+                                },
+                                child: Text("Save Info")),
+                          ),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(context,
                                   MaterialPageRoute(builder: (_) => FbLogin()));
                             },
-                            child: Text("Save Info")),
-                      ),
+                            child: Text("Already Login...!"))
+                      ],
                     ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => FbLogin()));
-                        },
-                        child: Text("Already Login...!"))
-                  ],
-                ),
-              )),
+                  )),
             )),
       ),
     );

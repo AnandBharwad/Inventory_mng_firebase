@@ -19,4 +19,28 @@ class ProductService {
       }).toList();
     });
   }
+
+  Future<void> deleteProductRecord(String? id) async {
+    try {
+      await FirebaseFirestore.instance.collection("Product").doc(id!).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateStock(String productId, int quantity) async {
+    await FirebaseFirestore.instance
+        .collection("Product")
+        .doc(productId)
+        .update({"productQty": quantity});
+  }
+
+  Future<int> getCurrentStock(String productId) async {
+    var doc = await FirebaseFirestore.instance
+        .collection("Product")
+        .doc(productId)
+        .get();
+
+    return doc["productQty"];
+  }
 }
