@@ -4,7 +4,7 @@
         {
             "label": "Flutter Push to Xiaomi",
             "type": "shell",
-            "command": "flutter build apk --debug ; & \"$env:LOCALAPPDATA\\Android\\Sdk\\platform-tools\\adb.exe\" push build/app/outputs/flutter-apk/app-debug.apk /sdcard/Download/A_Application/app.apk",
+            "command": "flutter build apk --release ; & \"$env:LOCALAPPDATA\\Android\\Sdk\\platform-tools\\adb.exe\" push build/app/outputs/flutter-apk/app-debug.apk /sdcard/Download/A_Application/app.apk",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

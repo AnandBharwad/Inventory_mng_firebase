@@ -20,9 +20,33 @@ class ProductService {
     });
   }
 
-  Future<void> deleteProductRecord(String? id) async {
+  /// Stream to fetch the last 5 added products
+Stream<List<ProductModel>> fetchRecentProducts({int limit = 5}) {
+  return FirebaseFirestore.instance
+      .collection("Product")
+      .limit(limit)
+      .snapshots()
+      .map((snapshot) {
+    return snapshot.docs.map((doc) {
+      return ProductModel.fromJson(doc.data(), doc.id);
+    }).toList();
+  });
+}
+
+  Future<void> updateEntireProduct(ProductModel product) async {
     try {
-      await FirebaseFirestore.instance.collection("Product").doc(id!).delete();
+      await FirebaseFirestore.instance
+          .collection("Product")
+          .doc(product.id)
+          .update(product.toMap());
+    } catch (e) {
+      print("Product Update Message : $e");
+    }
+  }
+
+  Future<void> deleteProductRecord(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection("Product").doc(id).delete();
     } catch (e) {
       print(e);
     }
@@ -43,4 +67,14 @@ class ProductService {
 
     return doc["productQty"];
   }
+
+ Future<String> getProductNameById(String productId) async {
+
+  var doc = await FirebaseFirestore.instance
+      .collection("Product")
+      .doc(productId)
+      .get();
+  return doc["productName"] ?? "Unknown";
+}
+
 }

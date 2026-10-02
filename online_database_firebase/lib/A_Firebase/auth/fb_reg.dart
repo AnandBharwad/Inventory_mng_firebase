@@ -1,43 +1,70 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:online_database_firebase/A_Firebase/auth/fb_reg.dart';
-import 'package:online_database_firebase/A_Firebase/routes/nav_routes.dart';
+import 'package:online_database_firebase/A_Firebase/auth/fb_login.dart';
 
-class FbLogin extends StatefulWidget {
-  const FbLogin({super.key});
+class FbForm extends StatefulWidget {
+  const FbForm({super.key});
 
   @override
-  State<FbLogin> createState() => _FbLoginState();
+  State<FbForm> createState() => _FbFormState();
 }
 
-class _FbLoginState extends State<FbLogin> {
+class _FbFormState extends State<FbForm> {
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _contactNoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
+  final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _isLoading = false;
 
-  Future<void> _handleLogin() async {
+  @override
+  void dispose() {
+    _userNameController.dispose();
+    _emailController.dispose();
+    _contactNoController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
+      String uid = userCredential.user!.uid;
+
+      // Save user profile details
+      await FirebaseFirestore.instance.collection("Manager").doc(uid).set({
+        "username": _userNameController.text.trim(),
+        "email": _emailController.text.trim(),
+        "contact": _contactNoController.text.trim(),
+      });
+
       if (!mounted) return;
 
-      // Navigate to your main bottom nav or home
-      Navigator.pushReplacementNamed(context, NavRoutes.bottomPages);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account created successfully! Please login."),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      Navigator.pop(context); // Return to login
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.message ?? "Authentication failed"),
+          content: Text(e.message ?? "Registration failed"),
           backgroundColor: Colors.redAccent,
           behavior: SnackBarBehavior.floating,
         ),
@@ -48,43 +75,41 @@ class _FbLoginState extends State<FbLogin> {
   }
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC), // Matching App Background
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.indigo,
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Logo / Icon Header
-                // Container(
-                //   height: 75,
-                //   width: 75,
-                //   decoration: BoxDecoration(
-                //     color: Colors.indigo.shade50,
-                //     shape: BoxShape.circle,
-                //   ),
-                //   child: const Center(
-                //     child: Icon(
-                //       Icons.inventory_2_rounded,
-                //       size: 40,
-                //       color: Colors.indigo,
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(height: 16),
+                // Header Icon
+                Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade50,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.person_add_alt_1_rounded,
+                      size: 36,
+                      color: Colors.indigo,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
 
                 const Text(
-                  "Welcome Back 👋",
+                  "Create Account",
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -93,12 +118,12 @@ class _FbLoginState extends State<FbLogin> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "Sign in to manage your inventory items",
+                  "Register as a Store Manager",
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 24),
 
-                // Login Form Card
+                // Form Container
                 Container(
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
@@ -118,7 +143,39 @@ class _FbLoginState extends State<FbLogin> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Email Field
+                        // Name
+                        TextFormField(
+                          controller: _userNameController,
+                          decoration: InputDecoration(
+                            labelText: "Full Name",
+                            prefixIcon: const Icon(Icons.person_outline,
+                                color: Colors.indigo),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FD),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade200),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                  color: Colors.indigo, width: 2),
+                            ),
+                          ),
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty
+                                  ? "Enter your name"
+                                  : null,
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Email
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -144,16 +201,47 @@ class _FbLoginState extends State<FbLogin> {
                                   color: Colors.indigo, width: 2),
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return "Please enter email";
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              value == null || !value.contains('@')
+                                  ? "Enter a valid email"
+                                  : null,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
 
-                        // Password Field
+                        // Contact Number
+                        TextFormField(
+                          controller: _contactNoController,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            labelText: "Contact Number",
+                            prefixIcon: const Icon(Icons.phone_outlined,
+                                color: Colors.indigo),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FD),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade200),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                  color: Colors.indigo, width: 2),
+                            ),
+                          ),
+                          validator: (value) =>
+                              value == null || value.trim().length < 10
+                                  ? "Enter valid contact number"
+                                  : null,
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Password
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
@@ -191,18 +279,16 @@ class _FbLoginState extends State<FbLogin> {
                                   color: Colors.indigo, width: 2),
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return "Please enter password";
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              value == null || value.trim().length < 6
+                                  ? "Password must be at least 6 characters"
+                                  : null,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 22),
 
-                        // Sign In Button
+                        // Submit Button
                         ElevatedButton(
-                          onPressed: _isLoading ? null : _handleLogin,
+                          onPressed: _isLoading ? null : _handleRegister,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.indigo,
                             foregroundColor: Colors.white,
@@ -222,7 +308,7 @@ class _FbLoginState extends State<FbLogin> {
                                   ),
                                 )
                               : const Text(
-                                  "Sign In",
+                                  "Create Account",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -234,26 +320,24 @@ class _FbLoginState extends State<FbLogin> {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
-                // Register Link
+                // Back to Login link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account?",
+                      "Already have an account?",
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                     TextButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const FbForm()),
-                        );
-                      },
+                            builder: (context) => FbLogin(),
+                          )),
                       child: const Text(
-                        "Register",
+                        "Sign In",
                         style: TextStyle(
                           color: Colors.indigo,
                           fontWeight: FontWeight.bold,

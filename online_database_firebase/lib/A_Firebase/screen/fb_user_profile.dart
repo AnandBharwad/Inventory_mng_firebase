@@ -11,6 +11,7 @@ class FbUserProfile extends StatefulWidget {
 
 class _FbUserProfileState extends State<FbUserProfile> {
   String? userName;
+  String? userEmail;
   String? userContact;
 
   late Future<void> _fetchDataFuture;
@@ -23,16 +24,8 @@ class _FbUserProfileState extends State<FbUserProfile> {
         .get();
 
     userName = document["username"];
+    userEmail = document["email"];
     userContact = document["contact"];
-  }
-
-  Future<void> updateData(String userName, String userContact) async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    await FirebaseFirestore.instance
-        .collection("Manager")
-        .doc(user!.uid)
-        .set({"userName": userName, "contact": userContact});
   }
 
   @override
@@ -50,12 +43,17 @@ class _FbUserProfileState extends State<FbUserProfile> {
         title: const Text(
           "Profile Details",
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black87),
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black87),
+        iconTheme: const IconThemeData(color: Colors.red),
+        
+
       ),
       body: FutureBuilder<void>(
         future: _fetchDataFuture,
@@ -93,9 +91,9 @@ class _FbUserProfileState extends State<FbUserProfile> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: Colors.black.withOpacity(0.3),
                         blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        offset: const Offset(3, 9),
                       ),
                     ],
                   ),
@@ -171,6 +169,48 @@ class _FbUserProfileState extends State<FbUserProfile> {
                           ),
                         ],
                       ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: Divider(
+                          height: 1,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.orange.withOpacity(0.1),
+                            child: Icon(
+                              Icons.mail,
+                              color: Colors.amberAccent,
+                              size: 20,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Email",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 13),
+                                ),
+                                Text(
+                                  userEmail!,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),

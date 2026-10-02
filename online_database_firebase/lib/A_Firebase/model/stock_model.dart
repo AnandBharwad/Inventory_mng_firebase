@@ -1,11 +1,11 @@
-class StockModel {
+class StockTransactionModel {
   String? id;
   String productId;
   String type;
   int quantity;
   DateTime date;
 
-  StockModel(
+  StockTransactionModel(
       {this.id,
       required this.productId,
       required this.type,
@@ -21,8 +21,9 @@ class StockModel {
     };
   }
 
-  factory StockModel.fromjson(Map<String, dynamic> map, String documentId) {
-    return StockModel(
+  factory StockTransactionModel.fromjson(
+      Map<String, dynamic> map, String documentId) {
+    return StockTransactionModel(
         id: documentId,
         productId: map["productId"],
         type: map["type"],

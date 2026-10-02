@@ -1,6 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 class ProductModel {
   String? id;
   String? productName;
@@ -8,17 +5,15 @@ class ProductModel {
   double? productPrice;
 
   String? categoryId;
-  // String? categoryName;
-  String? selectedSupplierId;
-
-  ProductModel(
-      {this.id,
-      required this.productName,
-      required this.productQty,
-      required this.productPrice,
-      this.categoryId,
-      // required this.categoryName,
-      this.selectedSupplierId});
+  String? supplierId;
+  ProductModel({
+    this.id,
+    required this.productName,
+    required this.productQty,
+    required this.productPrice,
+    required this.categoryId,
+    required this.supplierId,
+  });
 
   //Now , convert data into map format
 
@@ -28,8 +23,7 @@ class ProductModel {
       "productQty": productQty,
       "productPrice": productPrice,
       "categoryId": categoryId,
-      // "categoryName": categoryName,
-      "selectedSupplierId": selectedSupplierId
+      "supplierId": supplierId
     };
   }
 
@@ -42,7 +36,6 @@ class ProductModel {
         productQty: (map["productQty"] as num).toInt(),
         productPrice: (map["productPrice"] as num).toDouble(),
         categoryId: map["categoryId"],
-        // categoryName: map["categoryName"],
-        selectedSupplierId: map["selectedSupplierId"] ?? "Null Value");
+        supplierId: map["selectedSupplierId"] ?? map["supplierId"]);
   }
 }

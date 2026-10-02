@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 class NavRoutes {
   static const newHome = "/newHome";
+  static const bottomPages = "/bottomPages";
   static const register = "register";
   static const login = "/login";
   static const home = "/home";
@@ -14,5 +13,4 @@ class NavRoutes {
   static const editProduct = "/editProduct";
   static const displayProduct = "/displayProduct";
   static const editCategory = "/editCategory";
-  
 }

@@ -27,4 +27,29 @@ class Supplierservice {
         .doc(supplier.id)
         .update(supplier.toMap());
   }
+
+  Future<bool> deleteSupplier(String supplierId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("Supplier")
+          .doc(supplierId)
+          .delete();
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+//if we need name by id
+  Future<String> fetchSupplierNameById(String supplierId) async {
+    var doc = await FirebaseFirestore.instance
+        .collection("Supplier")
+        .doc(supplierId)
+        .get();
+    if (!doc.exists) {
+      return "Unknown";
+    }
+    return doc["supplierName"];
+  }
 }
